@@ -1,18 +1,29 @@
 import fluxForm, { getActionCreators } from 'flux-form'
 
+export const isRequired = (data) => {
+  if (!data) throw new Error('Field is required')
+}
+
 export default (namespace, alt, opts) => {
   const state = opts.state || {}
 
-  const { changed, saved, canceled } = getActionCreators(namespace)
+  const { changed, saved, canceled, failed } = getActionCreators(namespace)
 
   const store = alt.createUnsavedStore({
-    state: state,
+    state: {
+      errors: null,
+      state,
+    },
     bindListeners: {
-      change: [changed.id, saved.id, canceled.id],
+      change: [changed, saved, canceled],
+      fail: failed,
+    },
+    fail(invalidState) {
+      this.setState({ errors: invalidState })
     },
     change(state) {
-      this.setState(state)
-    }
+      this.setState({ errors: null, state })
+    },
   })
 
   // getProps takes some state and merges it with the store's state
@@ -21,7 +32,7 @@ export default (namespace, alt, opts) => {
   const getProps = (state) => {
     return fluxForm(namespace, alt.dispatcher, {
       ...opts,
-      state: { ...state, ...store.getState() },
+      state: { ...state, ...store.getState().state },
     })
   }
 
