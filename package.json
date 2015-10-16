@@ -1,6 +1,6 @@
 {
   "name": "alt-form",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Manage your forms with alt",
   "main": "lib/altForm.js",
   "dependencies": {
