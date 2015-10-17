@@ -30,7 +30,19 @@ export default (namespace, alt, opts) => {
   // this is so you can pass in state during render time and have it be picked
   // up automatically by the form
   const getProps = (state) => {
-    return fluxForm(namespace, alt.dispatcher, {
+    return fluxForm(namespace, {
+      dispatch(res) {
+        const { namespace, name } = res.meta
+
+        const details = {
+          id: res.type,
+          namespace,
+          name,
+        }
+
+        alt.dispatch(res.type, res.payload, details)
+      }
+    }, {
       ...opts,
       state: { ...state, ...store.getState().state },
     })
