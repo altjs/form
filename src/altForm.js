@@ -4,19 +4,31 @@ export const isRequired = (data) => {
   if (!data) throw new Error('Field is required')
 }
 
+export { getActionCreators }
+
 export default (namespace, alt, opts) => {
   const state = opts.state || {}
 
-  const { changed, saved, canceled, failed } = getActionCreators(namespace)
+  const {
+    changed,
+    saved,
+    canceled,
+    failed,
+    focused,
+    blurred,
+  } = getActionCreators(namespace)
 
   const store = alt.createUnsavedStore({
     state: {
       errors: null,
+      focused: null,
       state,
     },
     bindListeners: {
       change: [changed, saved, canceled],
       fail: failed,
+      focus: focused,
+      blur: blurred,
     },
     fail(invalidState) {
       this.setState({ errors: invalidState })
@@ -24,6 +36,14 @@ export default (namespace, alt, opts) => {
     change(state) {
       this.setState({ errors: null, state })
     },
+    focus(key) {
+      this.setState({
+        focused: key
+      })
+    },
+    blur() {
+      this.setState({ focused: null })
+    }
   })
 
   // getProps takes some state and merges it with the store's state
