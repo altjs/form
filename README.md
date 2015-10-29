@@ -3,7 +3,29 @@
 Manages your forms with alt. Uses [`flux-form`](https://github.com/goatslacker/flux-form) for all the heavy lifting.
 
 ```js
+const form = altForm('Company', alt, {
+  fields: [ 'name' ],
+})
+
 class EditName extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = form.getProps({
+      name: props.initialName
+    })
+  }
+  
+  // Please don't connect stores yourself, use something like
+  // https://github.com/altjs/react which connects your stores automatically
+  componentDidMount() {
+    this.unlisten = form.store.listen(state => this.setState(state))
+  }
+  
+  componentWillUnmount() {
+    this.unlisten()
+  }
+
   render() {
     return (
       <div>
@@ -11,35 +33,19 @@ class EditName extends React.Component {
         <input
           type="input"
           placeholder="Name"
-          {...this.props.form.props.name}
+          {...this.state.props.name}
         />
 
-        <input type="button" onClick={this.props.form.save} />
+        <input type="button" onClick={this.state.save} />
       </div>
     )
   }
 }
 
-export default connectToStores(EditName, () => {
-  const form = altForm('Company', alt, {
-    fields: [ 'name' ],
-  })
+export default EditName
+```
 
-  return {
-    listenTo() {
-      return [form.store]
-    },
-
-    getProps(props) {
-      return {
-        form: form.getProps({
-          name: props.initialName
-        })
-      }
-    },
-  }
-})
-
+```js
 <EditName initialName="Jane" />
 ```
 
