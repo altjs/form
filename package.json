@@ -4,7 +4,7 @@
   "description": "Manage your forms with alt",
   "main": "lib/altForm.js",
   "dependencies": {
-    "flux-form": "3.0.0"
+    "flux-form": "4.1.0"
   },
   "devDependencies": {
     "babel": "5.8.23"

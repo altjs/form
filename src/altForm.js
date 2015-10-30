@@ -13,7 +13,7 @@ export default (namespace, alt, opts) => {
     changed,
     saved,
     canceled,
-    failed,
+    validationFailed,
     focused,
     blurred,
   } = getActionCreators(namespace)
@@ -26,7 +26,7 @@ export default (namespace, alt, opts) => {
     },
     bindListeners: {
       change: [changed, saved, canceled],
-      fail: failed,
+      fail: validationFailed,
       focus: focused,
       blur: blurred,
     },
@@ -46,27 +46,29 @@ export default (namespace, alt, opts) => {
     }
   })
 
+  let form = null
+
   // getProps takes some state and merges it with the store's state
   // this is so you can pass in state during render time and have it be picked
   // up automatically by the form
   const getProps = (state) => {
-    return fluxForm(namespace, {
-      dispatch(res) {
-        const { namespace, name } = res.meta
-
-        const details = {
-          id: res.type,
-          namespace,
-          name,
-        }
-
-        alt.dispatch(res.type, res.payload, details)
-      }
-    }, {
+    form = fluxForm(namespace, alt, {
       ...opts,
       state: { ...state, ...store.getState().state },
     })
+
+    return form
   }
 
-  return { store, state, getProps }
+  const validate = (cb, v) => form ? form.validate(cb, v) : Promise.reject()
+  const save = cb => form ? form.save(cb) : Promise.reject()
+  const normalize = () => form ? form.normalize() : null
+
+  return {
+    store,
+    state,
+    getProps,
+    validate,
+    save,
+  }
 }
