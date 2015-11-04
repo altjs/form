@@ -34,7 +34,7 @@ export default (namespace, alt, opts) => {
       this.setState({ errors: invalidState })
     },
     change(state) {
-      this.setState({ errors: null, state })
+      this.setState({ errors: null, ...state })
     },
     focus(key) {
       this.setState({
@@ -64,7 +64,7 @@ export default (namespace, alt, opts) => {
       }
     }, {
       ...opts,
-      state: { ...state, ...store.getState().state },
+      state: { ...state, ...store.getState() },
     })
   }
 
