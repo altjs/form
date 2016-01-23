@@ -10,7 +10,8 @@
     "babel": "5.8.23"
   },
   "scripts": {
-    "build": "babel src --out-dir lib"
+    "build": "babel src --out-dir lib",
+    "prebublish": "npm run build"
   },
   "repository": {
     "type": "git",
