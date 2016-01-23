@@ -13,7 +13,7 @@ export default (namespace, alt, opts) => {
     changed,
     saved,
     canceled,
-    failed,
+    validationFailed,
     focused,
     blurred,
   } = getActionCreators(namespace)
@@ -26,7 +26,7 @@ export default (namespace, alt, opts) => {
     },
     bindListeners: {
       change: [changed, saved, canceled],
-      fail: failed,
+      fail: validationFailed,
       focus: focused,
       blur: blurred,
     },
